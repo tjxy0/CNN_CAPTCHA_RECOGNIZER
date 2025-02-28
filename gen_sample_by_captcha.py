@@ -2,35 +2,47 @@
 """
 使用captcha lib生成验证码（前提：pip install captcha）
 """
+# -*- coding: UTF-8 -*-
 from captcha.image import ImageCaptcha
 import os
 import random
-import time
 import json
+from concurrent.futures import ThreadPoolExecutor
 
 
-def gen_special_img(text, file_path, width, height):
-    # 生成img文件
-    generator = ImageCaptcha(width=width, height=height)  # 指定大小
-    img = generator.generate_image(text)  # 生成图片
-    img.save(file_path)  # 保存图片
+class CaptchaGenerator:
+    def __init__(self, width, height):
+        self.generator = ImageCaptcha(width=width, height=height)
+
+    def gen_special_img(self, text, file_path):
+        img = self.generator.generate_image(text)
+        img.save(file_path)
+
+
+def generate_random_text(characters, char_count):
+    return ''.join(random.choices(characters, k=char_count))
 
 
 def gen_ima_by_batch(root_dir, image_suffix, characters, count, char_count, width, height):
-    # 判断文件夹是否存在
     if not os.path.exists(root_dir):
         os.makedirs(root_dir)
 
-    for index, i in enumerate(range(count)):
-        text = ""
-        for j in range(char_count):
-            text += random.choice(characters)
+    generator = CaptchaGenerator(width, height)
+    texts = [generate_random_text(characters, char_count) for _ in range(count)]
 
-        timec = str(time.time()).replace(".", "")
-        p = os.path.join(root_dir, "{}_{}.{}".format(text, timec, image_suffix))
-        gen_special_img(text, p, width, height)
+    with ThreadPoolExecutor(max_workers=32) as executor:
+        futures = []
+        for i, text in enumerate(texts):
+            p = f"{root_dir}/{text}_{i}.{image_suffix}"
+            futures.append(executor.submit(generator.gen_special_img, text, p))
 
-        print("Generate captcha image => {}".format(index + 1))
+        for idx, future in enumerate(futures):
+            future.result()
+            if idx % 100 == 0:
+                print(f"Generated {idx + 1}/{count} images")
+
+
+# main函数保持原结构不变
 
 
 def main():
