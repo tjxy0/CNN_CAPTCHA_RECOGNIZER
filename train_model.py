@@ -154,7 +154,7 @@ class TrainModel(CNN):
                 # 保存最佳模型
                 if val_acc_image > best_acc:
                     best_acc = val_acc_image
-                    self.save_weights(self.model_save_dir)
+                    self.save_weights(f"{self.model_save_dir}_epoch_{best_acc}.weights.h5")
                     print(f"验证准确率提升至 {best_acc:.4f}, 模型已保存")
 
                 # 提前停止
