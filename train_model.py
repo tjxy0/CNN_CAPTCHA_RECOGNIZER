@@ -164,7 +164,7 @@ class TrainModel(CNN):
 
             # 定期保存
             if epoch % self.cycle_save == 0:
-                self.save_weights(f"{self.model_save_dir}_epoch_{epoch}")
+                self.save_weights(f"{self.model_save_dir}_epoch_{epoch}.weights.h5")
                 print(f"周期保存模型：{self.model_save_dir}_epoch_{epoch}")
 
     def calculate_accuracy(self, logits, labels):
