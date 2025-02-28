@@ -146,10 +146,10 @@ class TrainModel(CNN):
                     f"[Val]   loss: {val_loss:.4f} - char_acc: {val_char_acc.result():.4f} - image_acc: {val_image_acc.result():.4f}")
 
                 # 重置指标
-                train_char_acc.reset_states()
-                train_image_acc.reset_states()
-                val_char_acc.reset_states()
-                val_image_acc.reset_states()
+                train_char_acc.reset_state()
+                train_image_acc.reset_state()
+                val_char_acc.reset_state()
+                val_image_acc.reset_state()
 
                 # 保存最佳模型
                 if val_acc_image > best_acc:
