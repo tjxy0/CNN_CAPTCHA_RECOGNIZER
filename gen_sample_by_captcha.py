@@ -23,14 +23,14 @@ def generate_random_text(characters, char_count):
     return ''.join(random.choices(characters, k=char_count))
 
 
-def gen_ima_by_batch(root_dir, image_suffix, characters, count, char_count, width, height):
+def gen_ima_by_batch(tread, root_dir, image_suffix, characters, count, char_count, width, height):
     if not os.path.exists(root_dir):
         os.makedirs(root_dir)
 
     generator = CaptchaGenerator(width, height)
     texts = [generate_random_text(characters, char_count) for _ in range(count)]
 
-    with ThreadPoolExecutor(max_workers=32) as executor:
+    with ThreadPoolExecutor(max_workers=tread) as executor:
         futures = []
         for i, text in enumerate(texts):
             p = f"{root_dir}/{text}_{i}.{image_suffix}"
@@ -38,7 +38,7 @@ def gen_ima_by_batch(root_dir, image_suffix, characters, count, char_count, widt
 
         for idx, future in enumerate(futures):
             future.result()
-            if idx % 100 == 0:
+            if idx % 1000 == 0:
                 print(f"Generated {idx + 1}/{count} images")
 
 
@@ -54,12 +54,12 @@ def main():
     characters = config["characters"]  # 图片上显示的字符集 # characters = "0123456789abcdefghijklmnopqrstuvwxyz"
     count = config["count"]  # 生成多少张样本
     char_count = config["char_count"]  # 图片上的字符数量
-
+    tread = config["tread"] #  使用的线程数
     # 设置图片高度和宽度
     width = config["width"]
     height = config["height"]
 
-    gen_ima_by_batch(root_dir, image_suffix, characters, count, char_count, width, height)
+    gen_ima_by_batch(tread, root_dir, image_suffix, characters, count, char_count, width, height)
 
 
 if __name__ == '__main__':
