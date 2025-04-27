@@ -1,39 +1,10 @@
-# cnn_captcha
-use CNN recognize captcha by tensorflow.  
-本项目针对字符型图片验证码，使用tensorflow实现卷积神经网络，进行验证码识别。  
-项目封装了比较通用的**校验、训练、验证、识别、API模块**，极大的减少了识别字符型验证码花费的时间和精力。 
-  
-项目已经帮助很多同学高效完成了验证码识别任务。
-如果你在使用过程中出现了bug和做了良好的改进，欢迎提出issue和PR，作者会尽快回复，希望能和你共同完善项目。 
-
-如果你需要识别点选、拖拽类验证码，或者有目标检测需求，也可以参考这个项目[nickliqian/darknet_captcha](https://github.com/nickliqian/darknet_captcha)。
-
-# 时间表
-#### 2018.11.12
-初版Readme.md  
-#### 2018.11.21
-加入关于验证码识别的一些说明  
-#### 2018.11.24
-优化校验数据集图片的规则  
-#### 2018.11.26
-新增`train_model_v2.py`文件，训练过程中同时输出训练集和验证集的准确率  
-#### 2018.12.06
-新增多模型部署支持，修复若干bug  
-#### 2018.12.08
-优化模型识别速度，支持api压力测试和统计耗时  
-#### 2019.02.19
-1. 新增一种准确率计算方式    
-2. TAG: v1.0
-#### 2019.04.12
-1. 只保留一种`train_model.py`文件
-2. 优化代码结构
-3. 把通用配置抽取到`sample_config.json`和`captcha_config.json`
-4. 修复若干大家在issue提出的问题
-#### 2019.06.01
-1. 完善readme文档，文档不长，请大家一定要读完~
-2. 使用cnnlib目录存放神经网络结构代码
-3. 做了一版训练数据统计，大家可以参考我们的训练次数、时长和准确率
-4. TAG: v2.0  
+# cnn_captcha_recognizer
+本项目基于[nickliqian/cnn_captcha](https://github.com/nickliqian/cnn_captcha)\
+从原项目的TensorFlow 1 迁移到了 TensorFlow 2，并对原项目的数据集生成脚本进行了优化，现在支持多线程了。\
+同时，也一并兼容了Apple Silicon(注意：本项目基于Apple Silicon构建，如需要在Win\Linux上部署，请更改requirements.txt里的软件包需求)
+\
+\
+以下是原项目的README.md，中间进行了部分修改
 
 # 目录
 <a href="#项目介绍">1 项目介绍</a>  
@@ -143,7 +114,7 @@ use CNN recognize captcha by tensorflow.
 ```
 pip install -r requirements.txt
 ```
-注意：如果需要使用GPU进行训练，请把文件中的tenforflow修改为tensorflow-gpu
+~~注意：如果需要使用GPU进行训练，请把文件中的tenforflow修改为tensorflow-gpu~~(在TensorFlow 2.x中，两者已经整合到同一个包中)
 
 ## 1.4 模型结构
 
@@ -173,6 +144,7 @@ pip install -r requirements.txt
   "char_count": 4,               # 每张验证码图片上的字符数量
   "width": 100,                  # 图片宽度
   "height": 60                   # 图片高度
+  "tread": 32                    # 指定生成用的线程数量 默认为32
 }
 ```
 
